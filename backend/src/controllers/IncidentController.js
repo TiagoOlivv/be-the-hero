@@ -52,5 +52,16 @@ module.exports = {
       .delete();
 
     return res.status(204).send();
+  },
+
+  async update(req, res) {
+    const incident = req.body;
+    const { id } = req.params;
+
+    await connection("incidents")
+      .where("id", id)
+      .update(incident);
+
+    return res.status(200).json({ message: "ok" });
   }
 };
