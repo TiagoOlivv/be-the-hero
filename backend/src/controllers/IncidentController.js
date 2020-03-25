@@ -57,11 +57,21 @@ module.exports = {
   async update(req, res) {
     const incident = req.body;
     const { id } = req.params;
+    const ong_id = req.headers.authorization;
+    const ong = await connection("incidents")
+      .where("id", id)
+      .select("ong_id")
+      .first();
+
+    if (ong.ong_id !== ong_id)
+      return res.status(401).json({ error: "Operation not permitted." });
 
     await connection("incidents")
       .where("id", id)
       .update(incident);
 
-    return res.status(200).json({ message: "ok" });
+    return res
+      .status(200)
+      .json({ message: "Incident data successfully changed" });
   }
 };
